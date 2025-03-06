@@ -1,4 +1,8 @@
-using BackendSignals.Services;
+using BackendSignals;
+using BackendSignals.Services.Implementations;
+using BackendSignals.Services.Interfaces;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +32,17 @@ builder.Services.AddHostedService<RabbitMQFlightsConsumerService>(sp =>
 {
     return new RabbitMQFlightsConsumerService(channel, FLIGHTS_QUEUE);
 });
+
+builder.Services.Configure<MongoDBSettings>(
+    builder.Configuration.GetSection("MongoDBSettings"));
+
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    return new MongoClient(settings.ConnectionString);
+});
+
+builder.Services.AddScoped<IFlightsService, FlightsService>();
 
 
 var app = builder.Build();
