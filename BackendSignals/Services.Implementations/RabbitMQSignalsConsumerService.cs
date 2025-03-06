@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace BackendSignals.Services
+namespace BackendSignals.Services.Implementations
 {
     public class RabbitMQSignalsConsumerService : BackgroundService
     {
