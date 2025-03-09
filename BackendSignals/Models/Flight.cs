@@ -11,7 +11,7 @@ namespace BackendSignals.Models
         public string? Id { get; set; }
 
         [BsonElement("FlightID")]
-        public long FlightID { get; set; }
+        public string FlightID { get; set; }
 
         [BsonElement("OperatorID")]
         public int OperatorID { get; set; }
@@ -52,6 +52,11 @@ namespace BackendSignals.Models
             BeginTime = request.BeginTime;
             Comment = request.Comment;
             Measurements = new List<Measurement>();
+        }
+
+        public void AddMeasurement(Measurement measurement)
+        {
+            this.Measurements.Add(measurement);
         }
     }
 }

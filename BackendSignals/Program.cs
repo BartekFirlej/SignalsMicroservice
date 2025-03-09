@@ -23,14 +23,19 @@ builder.Services.AddSwaggerGen();
 const string SIGNALS_QUEUE = "Signals";
 const string FLIGHTS_QUEUE = "Flights";
 
+builder.Services.AddSingleton<IFlightsService, FlightsService>();
+builder.Services.AddSingleton<IMeasurementsService, MeasurementsService>();
+
 builder.Services.AddHostedService<RabbitMQSignalsConsumerService>(sp =>
 {
-    return new RabbitMQSignalsConsumerService(channel, SIGNALS_QUEUE);
+    var measurementsService = sp.GetRequiredService<IMeasurementsService>();
+    return new RabbitMQSignalsConsumerService(channel, SIGNALS_QUEUE, measurementsService);
 });
 
 builder.Services.AddHostedService<RabbitMQFlightsConsumerService>(sp =>
 {
-    return new RabbitMQFlightsConsumerService(channel, FLIGHTS_QUEUE);
+    var flightsService = sp.GetRequiredService<IFlightsService>();
+    return new RabbitMQFlightsConsumerService(channel, FLIGHTS_QUEUE, flightsService);
 });
 
 builder.Services.Configure<MongoDBSettings>(
@@ -42,7 +47,6 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     return new MongoClient(settings.ConnectionString);
 });
 
-builder.Services.AddScoped<IFlightsService, FlightsService>();
 
 
 var app = builder.Build();

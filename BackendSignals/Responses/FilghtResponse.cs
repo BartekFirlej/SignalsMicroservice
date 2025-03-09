@@ -2,7 +2,7 @@
 {
     public class FilghtResponse
     {
-        public long FlightID { get; set; }
+        public string FlightID { get; set; }
         public int OperatorID { get; set; }
         public int TeamID { get; set; }
         public int PlatoonID { get; set; }

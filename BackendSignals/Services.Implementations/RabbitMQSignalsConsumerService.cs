@@ -1,4 +1,7 @@
 ﻿using System.Text;
+using BackendSignals.Requests;
+using System.Text.Json;
+using BackendSignals.Services.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -8,11 +11,13 @@ namespace BackendSignals.Services.Implementations
     {
         private readonly IChannel _channel;
         private readonly string _queueName;
+        private readonly IMeasurementsService _measurementService;
 
-        public RabbitMQSignalsConsumerService(IChannel channel, string queueName)
+        public RabbitMQSignalsConsumerService(IChannel channel, string queueName, IMeasurementsService measurementService)
         {
             _channel = channel;
             _queueName = queueName;
+            _measurementService = measurementService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -25,8 +30,8 @@ namespace BackendSignals.Services.Implementations
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
                     Console.WriteLine($"Queue {_queueName}: {message}");
-
-                    // TODO: Add your asynchronous message processing logic here.
+                    MeasurementRequest measurementRequest = JsonSerializer.Deserialize<MeasurementRequest>(message);
+                    await _measurementService.AddMeasurement(measurementRequest);
                     await Task.Delay(1000);
                 }
                 catch (Exception ex)

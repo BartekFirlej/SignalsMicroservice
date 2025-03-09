@@ -29,7 +29,7 @@ namespace BackendSignals.Services.Implementations
 
         public async Task<Flight> GetFlightByFlightID(long flightID)
         {
-            var flight = await _flights.Find<Flight>(flight => flight.FlightID == flightID).FirstOrDefaultAsync();
+            var flight = await _flights.Find<Flight>(flight => long.Parse(flight.FlightID) == flightID).FirstOrDefaultAsync();
             return flight;
         }
     }
