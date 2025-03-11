@@ -1,5 +1,6 @@
 ﻿using BackendSignals.Models;
 using BackendSignals.Requests;
+using BackendSignals.Responses;
 using BackendSignals.Services.Interfaces;
 using MongoDB.Driver;
 
@@ -15,9 +16,10 @@ namespace BackendSignals.Services.Implementations
             _flights = database.GetCollection<Flight>("Flights");
         }
 
-        public async Task<List<Flight>> GetFlights()
+        public async Task<List<FlightResponse>> GetFlights()
         {
-            return await _flights.Find(flight => true).ToListAsync();
+            var flights = await _flights.Find(flight => true).ToListAsync();
+            return flights.Select(flight => new FlightResponse(flight)).ToList();
         }
 
         public async Task<Flight> CreateFlight(FlightBeginRequest request)
@@ -27,10 +29,10 @@ namespace BackendSignals.Services.Implementations
             return flight;
         }
 
-        public async Task<Flight> GetFlightByFlightID(long flightID)
+        public async Task<FlightResponse> GetFlightByFlightID(long flightID)
         {
-            var flight = await _flights.Find<Flight>(flight => long.Parse(flight.FlightID) == flightID).FirstOrDefaultAsync();
-            return flight;
+            var flight = await _flights.Find<Flight>(flight => flight.FlightID == flightID).FirstOrDefaultAsync();
+            return flight != null ? new FlightResponse(flight) : null;
         }
     }
 }

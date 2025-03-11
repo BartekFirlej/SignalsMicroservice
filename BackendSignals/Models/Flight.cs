@@ -11,7 +11,7 @@ namespace BackendSignals.Models
         public string? Id { get; set; }
 
         [BsonElement("FlightID")]
-        public string FlightID { get; set; }
+        public long FlightID { get; set; }
 
         [BsonElement("OperatorID")]
         public int OperatorID { get; set; }

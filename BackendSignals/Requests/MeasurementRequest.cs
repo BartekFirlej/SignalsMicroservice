@@ -5,8 +5,7 @@ namespace BackendSignals.Requests
 {
     public class MeasurementRequest
     {
-        [JsonConverter(typeof(NumberToStringConverter))]
-        public string FlightId { get; set; }
+        public long FlightId { get; set; }
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }

@@ -1,0 +1,33 @@
+﻿using BackendSignals.Models;
+
+namespace BackendSignals.Responses
+{
+    public class FlightResponse
+    {
+        public string FlightID { get; set; }
+        public int OperatorID { get; set; }
+        public int TeamID { get; set; }
+        public int PlatoonID { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Z { get; set; }
+        public DateTime BeginTime { get; set; }
+        public string? Comment { get; set; }
+        public List<Measurement> Measurements = new List<Measurement>();
+
+        public FlightResponse(Flight flight)
+        {
+            FlightID = flight.FlightID.ToString();
+            OperatorID = flight.OperatorID;
+            TeamID = flight.TeamID;
+            PlatoonID = flight.PlatoonID;
+            X = flight.X;
+            Y = flight.Y;
+            Z = flight.Z;
+            BeginTime = flight.BeginTime;
+            Comment = flight.Comment;
+            Measurements = flight.Measurements;
+
+        }
+    }
+}

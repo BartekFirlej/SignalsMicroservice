@@ -7,8 +7,7 @@ namespace BackendSignals.Requests
     {
         public int OperatorID { get; set; }
         public int TeamID { get; set; }
-        [JsonConverter(typeof(NumberToStringConverter))]
-        public string FlightID { get; set; }
+        public long FlightID { get; set; }
         public int PlatoonID { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

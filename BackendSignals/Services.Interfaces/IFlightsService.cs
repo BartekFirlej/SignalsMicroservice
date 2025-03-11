@@ -6,8 +6,8 @@ namespace BackendSignals.Services.Interfaces
 {
     public interface IFlightsService
     {
-        public Task<List<Flight>> GetFlights();
-        public Task<Flight> GetFlightByFlightID(long flightID);
+        public Task<List<FlightResponse>> GetFlights();
+        public Task<FlightResponse> GetFlightByFlightID(long flightID);
         public Task<Flight> CreateFlight(FlightBeginRequest request);
     }
 }
