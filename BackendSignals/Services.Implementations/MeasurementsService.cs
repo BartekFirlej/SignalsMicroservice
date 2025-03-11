@@ -20,10 +20,6 @@ namespace BackendSignals.Services.Implementations
             var measurement = new Measurement(request);
             var update = Builders<Flight>.Update.Push(f => f.Measurements, measurement);
             await _flights.UpdateOneAsync(flight => flight.FlightID == request.FlightId, update);
-            var updateResult = await _flights.UpdateOneAsync(
-    flight => flight.FlightID == request.FlightId,
-    update);
-            Console.WriteLine($"Matched: {updateResult.MatchedCount}, Modified: {updateResult.ModifiedCount}");
             return measurement;
         }
     }

@@ -40,12 +40,10 @@ namespace BackendSignals.Services.Implementations
                 }
             };
 
-            // Start consuming messages (autoAck set to true)
             await _channel.BasicConsumeAsync(queue: _queueName,
                                              autoAck: true,
                                              consumer: consumer);
 
-            // Keep the service alive until cancellation is requested.
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, stoppingToken);

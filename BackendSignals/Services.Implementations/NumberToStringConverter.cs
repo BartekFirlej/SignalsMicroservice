@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BackendSignals.Services.Implementations
@@ -8,10 +7,8 @@ namespace BackendSignals.Services.Implementations
     {
         public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            // If the token is a number, convert it to string
             if (reader.TokenType == JsonTokenType.Number)
             {
-                // Use GetDecimal to avoid precision loss, then call ToString
                 return reader.GetDecimal().ToString();
             }
             else if (reader.TokenType == JsonTokenType.String)
