@@ -53,5 +53,10 @@ namespace BackendSignals.Models
             Comment = request.Comment;
             Measurements = new List<Measurement>();
         }
+
+        public void AddMeasurement(Measurement measurement)
+        {
+            this.Measurements.Add(measurement);
+        }
     }
 }

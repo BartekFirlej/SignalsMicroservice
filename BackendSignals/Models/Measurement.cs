@@ -1,4 +1,6 @@
-﻿namespace BackendSignals.Models
+﻿using BackendSignals.Requests;
+
+namespace BackendSignals.Models
 {
     public class Measurement
     {
@@ -6,6 +8,15 @@
         public float Y { get; set; }
         public float Z { get; set; }
         public DateTime Timestamp { get; set; }
-        public Dictionary<float, float> SignalMeasurements { get; set; } = new Dictionary<float, float>();
+        public Dictionary<string, float> SignalMeasurements { get; set; } = new Dictionary<string, float>();
+
+        public Measurement(MeasurementRequest measurementRequest)
+        {
+            X = measurementRequest.X;
+            Y = measurementRequest.Y;
+            Z = measurementRequest.Z;
+            Timestamp = measurementRequest.Timestamp;
+            SignalMeasurements = measurementRequest.Measurements;
+        }
     }
 }
