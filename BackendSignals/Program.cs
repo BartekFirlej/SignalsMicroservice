@@ -20,8 +20,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-const string SIGNALS_QUEUE = "Signals";
-const string FLIGHTS_QUEUE = "Flights";
+const string SIGNALS_FLIGHT_BEGIN_QUEUE = "Signals_Flight_Begin";
+const string SIGNALS_FLIGHT_END_QUEUE = "Signals_Flight_End";
+const string SIGNALS_SIGNALS_QUEUE = "Signals_Signals";
 
 builder.Services.AddSingleton<IFlightsService, FlightsService>();
 builder.Services.AddSingleton<IMeasurementsService, MeasurementsService>();
@@ -29,13 +30,13 @@ builder.Services.AddSingleton<IMeasurementsService, MeasurementsService>();
 builder.Services.AddHostedService<RabbitMQSignalsConsumerService>(sp =>
 {
     var measurementsService = sp.GetRequiredService<IMeasurementsService>();
-    return new RabbitMQSignalsConsumerService(channel, SIGNALS_QUEUE, measurementsService);
+    return new RabbitMQSignalsConsumerService(channel, SIGNALS_SIGNALS_QUEUE, measurementsService);
 });
 
 builder.Services.AddHostedService<RabbitMQFlightsConsumerService>(sp =>
 {
     var flightsService = sp.GetRequiredService<IFlightsService>();
-    return new RabbitMQFlightsConsumerService(channel, FLIGHTS_QUEUE, flightsService);
+    return new RabbitMQFlightsConsumerService(channel, SIGNALS_FLIGHT_BEGIN_QUEUE, SIGNALS_FLIGHT_END_QUEUE, flightsService);
 });
 
 builder.Services.Configure<MongoDBSettings>(

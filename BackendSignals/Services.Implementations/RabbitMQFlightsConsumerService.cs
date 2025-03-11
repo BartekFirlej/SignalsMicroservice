@@ -10,13 +10,15 @@ namespace BackendSignals.Services.Implementations
     public class RabbitMQFlightsConsumerService : BackgroundService
     {
         private readonly IChannel _channel;
-        private readonly string _queueName;
+        private readonly string _SIGNALS_FLIGHT_BEGIN_QUEUE;
+        private readonly string _SIGNALS_FLIGHT_END_QUEUE;
         private readonly IFlightsService _flightsService;
 
-        public RabbitMQFlightsConsumerService(IChannel channel, string queueName, IFlightsService flightsService)
+        public RabbitMQFlightsConsumerService(IChannel channel, string SIGNALS_FLIGHT_BEGIN_QUEUE, string SIGNALS_FLIGHT_END_QUEUE, IFlightsService flightsService)
         {
             _channel = channel;
-            _queueName = queueName;
+            _SIGNALS_FLIGHT_BEGIN_QUEUE = SIGNALS_FLIGHT_BEGIN_QUEUE;
+            _SIGNALS_FLIGHT_END_QUEUE = SIGNALS_FLIGHT_END_QUEUE;
             _flightsService = flightsService;
         }
 
@@ -29,18 +31,18 @@ namespace BackendSignals.Services.Implementations
                 {
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine($"Queue {_queueName}: {message}");
+                    Console.WriteLine($"Queue {_SIGNALS_FLIGHT_BEGIN_QUEUE}: {message}");
                     FlightBeginRequest flightRequest = JsonSerializer.Deserialize<FlightBeginRequest>(message);
                     _flightsService.CreateFlight(flightRequest);
                     await Task.Delay(100);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error processing message from {_queueName}: {ex}");
+                    Console.WriteLine($"Error processing message from {_SIGNALS_FLIGHT_BEGIN_QUEUE}: {ex}");
                 }
             };
 
-            await _channel.BasicConsumeAsync(queue: _queueName,
+            await _channel.BasicConsumeAsync(queue: _SIGNALS_FLIGHT_BEGIN_QUEUE,
                                              autoAck: true,
                                              consumer: consumer);
 

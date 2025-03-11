@@ -23,13 +23,13 @@ namespace BackendSignals.Models
         public int PlatoonID { get; set; }
 
         [BsonElement("X")]
-        public int X { get; set; }
+        public float X { get; set; }
 
         [BsonElement("Y")]
-        public int Y { get; set; }
+        public float Y { get; set; }
 
         [BsonElement("Z")]
-        public int Z { get; set; }
+        public float Z { get; set; }
 
         [BsonElement("BeginTime")]
         public DateTime BeginTime { get; set; }

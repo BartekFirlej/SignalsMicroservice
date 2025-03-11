@@ -1,7 +1,4 @@
-﻿using BackendSignals.Services.Implementations;
-using System.Text.Json.Serialization;
-
-namespace BackendSignals.Requests
+﻿namespace BackendSignals.Requests
 {
     public class FlightBeginRequest
     {
@@ -9,9 +6,9 @@ namespace BackendSignals.Requests
         public int TeamID { get; set; }
         public long FlightID { get; set; }
         public int PlatoonID { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
         public DateTime BeginTime { get; set; }
         public string? Comment { get; set; }
     }
