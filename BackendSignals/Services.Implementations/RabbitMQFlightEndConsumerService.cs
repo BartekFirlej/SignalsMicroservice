@@ -7,17 +7,15 @@ using BackendSignals.Services.Interfaces;
 
 namespace BackendSignals.Services.Implementations
 {
-    public class RabbitMQFlightsConsumerService : BackgroundService
+    public class RabbitMQFlightEndConsumerService : BackgroundService
     {
         private readonly IChannel _channel;
-        private readonly string _SIGNALS_FLIGHT_BEGIN_QUEUE;
         private readonly string _SIGNALS_FLIGHT_END_QUEUE;
         private readonly IFlightsService _flightsService;
 
-        public RabbitMQFlightsConsumerService(IChannel channel, string SIGNALS_FLIGHT_BEGIN_QUEUE, string SIGNALS_FLIGHT_END_QUEUE, IFlightsService flightsService)
+        public RabbitMQFlightEndConsumerService(IChannel channel, string SIGNALS_FLIGHT_END_QUEUE, IFlightsService flightsService)
         {
             _channel = channel;
-            _SIGNALS_FLIGHT_BEGIN_QUEUE = SIGNALS_FLIGHT_BEGIN_QUEUE;
             _SIGNALS_FLIGHT_END_QUEUE = SIGNALS_FLIGHT_END_QUEUE;
             _flightsService = flightsService;
         }
@@ -31,18 +29,18 @@ namespace BackendSignals.Services.Implementations
                 {
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine($"Queue {_SIGNALS_FLIGHT_BEGIN_QUEUE}: {message}");
-                    FlightBeginRequest flightRequest = JsonSerializer.Deserialize<FlightBeginRequest>(message);
-                    _flightsService.CreateFlight(flightRequest);
+                    Console.WriteLine($"Queue {_SIGNALS_FLIGHT_END_QUEUE}: {message}");
+                    FlightEndRequest flightRequest = JsonSerializer.Deserialize<FlightEndRequest>(message);
+                    await _flightsService.EndFlight(flightRequest);
                     await Task.Delay(100);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error processing message from {_SIGNALS_FLIGHT_BEGIN_QUEUE}: {ex}");
+                    Console.WriteLine($"Error processing message from {_SIGNALS_FLIGHT_END_QUEUE}: {ex}");
                 }
             };
 
-            await _channel.BasicConsumeAsync(queue: _SIGNALS_FLIGHT_BEGIN_QUEUE,
+            await _channel.BasicConsumeAsync(queue: _SIGNALS_FLIGHT_END_QUEUE,
                                              autoAck: true,
                                              consumer: consumer);
 

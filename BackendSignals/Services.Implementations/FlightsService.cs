@@ -34,5 +34,19 @@ namespace BackendSignals.Services.Implementations
             var flight = await _flights.Find<Flight>(flight => flight.FlightID == flightID).FirstOrDefaultAsync();
             return flight != null ? new FlightResponse(flight) : null;
         }
+
+        public async Task<Flight> EndFlight(FlightEndRequest request)
+        {
+            var update = Builders<Flight>.Update.Set(f => f.EndTime, request.EndTime);
+            var options = new FindOneAndUpdateOptions<Flight>
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+            var updatedFlight = await _flights.FindOneAndUpdateAsync(
+                flight => flight.FlightID == request.FlightID,
+                update,
+                options);
+            return updatedFlight;
+        }
     }
 }

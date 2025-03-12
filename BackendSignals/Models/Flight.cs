@@ -33,6 +33,8 @@ namespace BackendSignals.Models
 
         [BsonElement("BeginTime")]
         public DateTime BeginTime { get; set; }
+        [BsonElement("EndTime")]
+        public DateTime? EndTime { get; set; }
 
         [BsonElement("Comment")]
         public string? Comment { get; set; }
@@ -51,6 +53,7 @@ namespace BackendSignals.Models
             Z = request.Z;
             BeginTime = request.BeginTime;
             Comment = request.Comment;
+            EndTime = null;
             Measurements = new List<Measurement>();
         }
 

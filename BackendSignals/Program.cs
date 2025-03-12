@@ -33,10 +33,16 @@ builder.Services.AddHostedService<RabbitMQSignalsConsumerService>(sp =>
     return new RabbitMQSignalsConsumerService(channel, SIGNALS_SIGNALS_QUEUE, measurementsService);
 });
 
-builder.Services.AddHostedService<RabbitMQFlightsConsumerService>(sp =>
+builder.Services.AddHostedService<RabbitMQFlightBeginConsumerService>(sp =>
 {
     var flightsService = sp.GetRequiredService<IFlightsService>();
-    return new RabbitMQFlightsConsumerService(channel, SIGNALS_FLIGHT_BEGIN_QUEUE, SIGNALS_FLIGHT_END_QUEUE, flightsService);
+    return new RabbitMQFlightBeginConsumerService(channel, SIGNALS_FLIGHT_BEGIN_QUEUE,  flightsService);
+});
+
+builder.Services.AddHostedService<RabbitMQFlightEndConsumerService>(sp =>
+{
+    var flightsService = sp.GetRequiredService<IFlightsService>();
+    return new RabbitMQFlightEndConsumerService(channel, SIGNALS_FLIGHT_END_QUEUE, flightsService);
 });
 
 builder.Services.Configure<MongoDBSettings>(
