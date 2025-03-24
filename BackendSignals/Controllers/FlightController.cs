@@ -29,6 +29,13 @@ namespace BackendSignals.Controllers
             return Ok(flight);
         }
 
+        [HttpGet("positions")]
+        public async Task<IActionResult> GetFlightsPositions()
+        {
+            var flights = await _flightService.GetFlightPositions();
+            return Ok(flights);
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostFlight(FlightBeginRequest request)
         {

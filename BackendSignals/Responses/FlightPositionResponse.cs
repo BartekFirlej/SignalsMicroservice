@@ -1,10 +1,10 @@
-﻿namespace BackendSignals.Requests
+﻿namespace BackendSignals.Responses
 {
-    public class FlightBeginRequest
+    public class FlightPositionResponse
     {
+        public string FlightID { get; set; }
         public int OperatorID { get; set; }
         public int TeamID { get; set; }
-        public long FlightID { get; set; }
         public int PlatoonID { get; set; }
         public float X { get; set; }
         public float Y { get; set; }

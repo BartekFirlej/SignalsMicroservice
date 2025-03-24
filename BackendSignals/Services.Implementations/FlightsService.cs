@@ -48,5 +48,42 @@ namespace BackendSignals.Services.Implementations
                 options);
             return updatedFlight;
         }
+
+        public async Task<List<FlightPositionResponse>> GetFlightPositions()
+        {
+            var flights = await _flights.Find(f => f.EndTime == null).ToListAsync();
+            var responseList = new List<FlightPositionResponse>();
+
+            foreach (var flight in flights)
+            {
+                if (flight.Measurements != null && flight.Measurements.Any())
+                {
+                    var latestMeasurement = flight.Measurements
+                                                  .OrderByDescending(m => m.Timestamp)
+                                                  .First();
+                    flight.X = latestMeasurement.X;
+                    flight.Y = latestMeasurement.Y;
+                    flight.Z = latestMeasurement.Z;
+                }
+
+                var dto = new FlightPositionResponse
+                {
+                    FlightID = flight.FlightID.ToString(),
+                    OperatorID = flight.OperatorID,
+                    TeamID = flight.TeamID,
+                    PlatoonID = flight.PlatoonID,
+                    X = flight.X,
+                    Y = flight.Y,
+                    Z = flight.Z,
+                    BeginTime = flight.BeginTime,
+                    Comment = flight.Comment,
+                    VideoStream = flight.VideoStream
+                };
+
+                responseList.Add(dto);
+            }
+
+            return responseList;
+        }
     }
 }
