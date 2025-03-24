@@ -39,6 +39,9 @@ namespace BackendSignals.Models
         [BsonElement("Comment")]
         public string? Comment { get; set; }
 
+        [BsonElement("VideoStream")]
+        public string VideoStream { get; set; }
+
         [BsonElement("Measurements")]
         public List<Measurement> Measurements { get; set; } = new List<Measurement>();
 
@@ -54,6 +57,7 @@ namespace BackendSignals.Models
             BeginTime = request.BeginTime;
             Comment = request.Comment;
             EndTime = null;
+            VideoStream = request.VideoStream;
             Measurements = new List<Measurement>();
         }
 
