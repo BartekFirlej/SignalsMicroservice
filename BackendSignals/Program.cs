@@ -27,16 +27,16 @@ const string SIGNALS_SIGNALS_QUEUE = "Signals_Signals";
 builder.Services.AddSingleton<IFlightsService, FlightsService>();
 builder.Services.AddSingleton<IMeasurementsService, MeasurementsService>();
 
+builder.Services.AddHostedService<RabbitMQFlightBeginConsumerService>(sp =>
+{
+    var flightsService = sp.GetRequiredService<IFlightsService>();
+    return new RabbitMQFlightBeginConsumerService(channel, SIGNALS_FLIGHT_BEGIN_QUEUE, flightsService);
+});
+
 builder.Services.AddHostedService<RabbitMQSignalsConsumerService>(sp =>
 {
     var measurementsService = sp.GetRequiredService<IMeasurementsService>();
     return new RabbitMQSignalsConsumerService(channel, SIGNALS_SIGNALS_QUEUE, measurementsService);
-});
-
-builder.Services.AddHostedService<RabbitMQFlightBeginConsumerService>(sp =>
-{
-    var flightsService = sp.GetRequiredService<IFlightsService>();
-    return new RabbitMQFlightBeginConsumerService(channel, SIGNALS_FLIGHT_BEGIN_QUEUE,  flightsService);
 });
 
 builder.Services.AddHostedService<RabbitMQFlightEndConsumerService>(sp =>
