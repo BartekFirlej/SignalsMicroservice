@@ -20,6 +20,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 const string SIGNALS_FLIGHT_BEGIN_QUEUE = "Signals_Flight_Begin";
 const string SIGNALS_FLIGHT_END_QUEUE = "Signals_Flight_End";
 const string SIGNALS_SIGNALS_QUEUE = "Signals_Signals";
@@ -63,6 +73,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
