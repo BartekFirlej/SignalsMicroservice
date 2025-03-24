@@ -12,6 +12,7 @@ namespace BackendSignals.Responses
         public float Y { get; set; }
         public float Z { get; set; }
         public DateTime BeginTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public string? Comment { get; set; }
         public string VideoStream { get; set; }
         public List<Measurement> Measurements = new List<Measurement>();
@@ -22,6 +23,7 @@ namespace BackendSignals.Responses
             OperatorID = flight.OperatorID;
             TeamID = flight.TeamID;
             PlatoonID = flight.PlatoonID;
+            EndTime = flight.EndTime;
             X = flight.X;
             Y = flight.Y;
             Z = flight.Z;
