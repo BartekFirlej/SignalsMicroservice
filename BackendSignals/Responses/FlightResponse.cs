@@ -15,7 +15,7 @@ namespace BackendSignals.Responses
         public DateTime? EndTime { get; set; }
         public string? Comment { get; set; }
         public string VideoStream { get; set; }
-        public List<Measurement> Measurements = new List<Measurement>();
+        public List<Measurement> Measurements { get; set; }
 
         public FlightResponse(Flight flight)
         {

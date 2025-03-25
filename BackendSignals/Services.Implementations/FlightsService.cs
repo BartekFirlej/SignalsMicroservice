@@ -16,10 +16,10 @@ namespace BackendSignals.Services.Implementations
             _flights = database.GetCollection<Flight>("Flights");
         }
 
-        public async Task<List<FlightResponse>> GetFlights()
+        public async Task<List<FlightPositionResponse>> GetFlights()
         {
             var flights = await _flights.Find(flight => true).ToListAsync();
-            return flights.Select(flight => new FlightResponse(flight)).ToList();
+            return flights.Select(flight => new FlightPositionResponse(flight)).ToList();
         }
 
         public async Task<Flight> CreateFlight(FlightBeginRequest request)
@@ -76,6 +76,7 @@ namespace BackendSignals.Services.Implementations
                     Y = flight.Y,
                     Z = flight.Z,
                     BeginTime = flight.BeginTime,
+                    EndTime = flight.EndTime,
                     Comment = flight.Comment,
                     VideoStream = flight.VideoStream
                 };
