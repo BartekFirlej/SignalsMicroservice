@@ -7,14 +7,31 @@ using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
+IConfiguration configuration = builder.Configuration;
+
 ConnectionFactory factory = new ConnectionFactory();
-factory.UserName = "guest";
-factory.Password = "guest";
-factory.HostName = "localhost";
-factory.ClientProvidedName = "app:audit component:event-consumer";
+factory.UserName = configuration["RabbitMQ:UserName"];
+factory.Password = configuration["RabbitMQ:Password"];
+factory.HostName = configuration["RabbitMQ:HostName"];
+factory.ClientProvidedName = configuration["RabbitMQ:ClientProvidedName"];
+
+var queuesSection = builder.Configuration.GetSection("RabbitMQ:Queues");
+
+string SIGNALS_FLIGHT_BEGIN_QUEUE = queuesSection["SignalsFlightBegin"];
+string SIGNALS_FLIGHT_END_QUEUE = queuesSection["SignalsFlightEnd"];
+string SIGNALS_SIGNALS_QUEUE = queuesSection["SignalsSignals"];
 
 IConnection conn = await factory.CreateConnectionAsync();
 IChannel channel = await conn.CreateChannelAsync();
+
+builder.Services.Configure<MongoDBSettings>(
+    builder.Configuration.GetSection("MongoDBSettings"));
+
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    return new MongoClient(settings.ConnectionString);
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -29,10 +46,6 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-
-const string SIGNALS_FLIGHT_BEGIN_QUEUE = "Signals_Flight_Begin";
-const string SIGNALS_FLIGHT_END_QUEUE = "Signals_Flight_End";
-const string SIGNALS_SIGNALS_QUEUE = "Signals_Signals";
 
 builder.Services.AddSingleton<IFlightsService, FlightsService>();
 builder.Services.AddSingleton<IMeasurementsService, MeasurementsService>();
@@ -54,17 +67,6 @@ builder.Services.AddHostedService<RabbitMQFlightEndConsumerService>(sp =>
     var flightsService = sp.GetRequiredService<IFlightsService>();
     return new RabbitMQFlightEndConsumerService(channel, SIGNALS_FLIGHT_END_QUEUE, flightsService);
 });
-
-builder.Services.Configure<MongoDBSettings>(
-    builder.Configuration.GetSection("MongoDBSettings"));
-
-builder.Services.AddSingleton<IMongoClient>(sp =>
-{
-    var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-    return new MongoClient(settings.ConnectionString);
-});
-
-
 
 var app = builder.Build();
 
